@@ -1,0 +1,118 @@
+第一次作业源代码
+
+1.把lena 512*512图像灰度级逐级递减8-1显示；
+
+clear all
+close all
+
+f = imread('lena.bmp');
+%将原图像的灰度级从8-1，并分别显示
+for i = 8:-1:1
+   subplot(2,4,9-i);
+    g = f/2^(8-i);
+    imshow(g,[0,2^i-1]);  
+end   
+
+2.计算lena图像的均值方差；
+
+clear;
+clc;
+
+f = imread('lena.bmp');
+f = double(f);     %转换为double类型进行处理
+av = mean(mean(f));  %得到样本均值
+
+f=(f-av).^2;
+var = sum(sum(f))/512/512;
+
+av      %均值
+var     %方差
+
+3.把lena图像用近邻、双线性和双三次插值法zoom到2048*2048；
+
+f = imread('lena.bmp');
+
+%对图片进行三种方式的调整
+g1 = imresize(f,4,'nearest');
+g2 = imresize(f,4,'bilinear');
+g3 = imresize(f,4,'bicubic');
+
+%将结果进行显示
+subplot(1,3,1);
+imshow(g1);
+title('最近邻插值');
+subplot(1,3,2);
+imshow(g2);
+title('双线性插值');
+subplot(1,3,3);
+imshow(g3);
+title('双三次线性插值');
+
+4.把lena和elain图像分别进行水平shear（参数可设置为1.5，或者自行选择），旋转30度，并采用用近邻、双线性和双三次插值法zoom到2048*2048；
+
+clear;
+clc;
+
+f1 = imread('lena.bmp');
+g1 = imread('elain1.bmp');
+%将两幅图像按照1.5：1进行水平错切
+
+%形成一个变换矩阵
+T = [1 1.5 0; 0 1 0 ; 0 0 1];
+transform = affine2d(T);
+
+f2 = imwarp(f1,transform);
+g2 = imwarp(g1,transform);
+f3 = imresize(f2,[2048 2048],'nearest');
+g3 = imresize(g2,[2048 2048],'nearest');
+%将两幅图像顺时针旋转30degree,
+f4 = imrotate(f1,30);
+g4 = imrotate(g1,30);
+%将旋转后所得的图片通过三种插值方式补到2048*2048
+f5 = imresize(f4,[2048 2048],'nearest');
+f6 = imresize(f4,[2048 2048],'bilinear');
+f7 = imresize(f4,[2048 2048],'bicubic');
+
+g5 = imresize(g4,[2048 2048],'nearest');
+g6 = imresize(g4,[2048 2048],'bilinear');
+g7 = imresize(g4,[2048 2048],'bicubic');
+
+%对所有所得的图像能够进行显示
+subplot(2,6,1);
+imshow(f1);
+title('原图像');
+subplot(2,6,2);
+imshow(f3);
+title('水平错切后zoom到2048*2048');
+subplot(2,6,3);
+imshow(f4);
+title('顺时针旋转30degree后');
+subplot(2,6,4);
+imshow(f5);
+title('最近邻内插');
+subplot(2,6,5);
+imshow(f6);
+title('双线性内插');
+subplot(2,6,6);
+imshow(f7);
+title('双三次内插');
+subplot(2,6,7);
+imshow(g1);
+title('原图像');
+subplot(2,6,8);
+imshow(g3);
+title('水平错切后zoom到2048*2048');
+subplot(2,6,9);
+imshow(g4);
+title('顺时针旋转30degree后');
+subplot(2,6,10);
+imshow(g5);
+title('最近邻内插');
+subplot(2,6,11);
+imshow(g6);
+title('双线性内插');
+subplot(2,6,12);
+imshow(g7);
+title('双三次内插');
+
+
